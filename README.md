@@ -36,7 +36,13 @@ $ docker-compose up --build -d
 
 
 ```
+### Check out the swagger doc on
+```bash
 
+http://localhost:3000/docs
+
+
+```
 
 - Author - [Ohaegbu Louis](https://www.linkedin.com/in/louis-ohaegbu-b01a41184/)
 

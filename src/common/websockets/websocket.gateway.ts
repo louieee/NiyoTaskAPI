@@ -22,7 +22,7 @@ export class WebsocketsGateway
   constructor(private readonly jwtService: JWTService) {}
 
   private users: Map<string, Socket> = new Map();
-  private userChannel: string;
+  userChannel: string;
   generalChannel = 'general';
 
   async afterInit(server: Server) {

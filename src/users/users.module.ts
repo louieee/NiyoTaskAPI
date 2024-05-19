@@ -25,5 +25,6 @@ import { UsersListener } from './users.listener';
     WebsocketsGateway,
     UsersListener,
   ],
+  exports: [UserService],
 })
 export class UserModule {}

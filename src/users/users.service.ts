@@ -1,8 +1,13 @@
 import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './users.schema';
-import { Model } from 'mongoose';
-import { deleteFile, handleFileUpload, hashPassword, verifyPassword } from '../common/common.helpers';
+import { Model, Types } from 'mongoose';
+import {
+  deleteFile,
+  handleFileUpload,
+  hashPassword,
+  verifyPassword,
+} from '../common/common.helpers';
 import { UserEmailService } from '../common/emails/user.emails';
 import { JWTService } from '../common/security/jwt.security';
 import { CreateUserDTO, RetrieveUserDTO, updateUserDTO } from './users.dto';
@@ -62,6 +67,9 @@ export class UserService {
       data: retData,
       status: 201,
     };
+  }
+  async userExist(userId: string) {
+    return this.UserModel.exists({ _id: new Types.ObjectId(userId) });
   }
   async verifyUserAccount(token: string): Promise<APIResponse<null>> {
     const { payload: userId } = await this.jwtService.verifyLinkToken(token);

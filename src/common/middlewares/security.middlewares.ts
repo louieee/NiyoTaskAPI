@@ -7,6 +7,7 @@ import { NextFunction, Request, Response } from 'express';
 import { JWTService } from '../security/jwt.security';
 import { TokenType } from '../common.enums';
 import { UserJWTPayloadDTO } from '../common.dtos';
+import { UserService } from '../../users/users.service';
 
 export interface AuthRequest extends Request {
   user: UserJWTPayloadDTO | undefined;
@@ -25,7 +26,10 @@ export class InvalidHostMiddleware implements NestMiddleware {
 
 @Injectable()
 export class JWTMiddleware implements NestMiddleware {
-  constructor(private readonly jwtService: JWTService) {}
+  constructor(
+    private readonly jwtService: JWTService,
+    private readonly userService: UserService,
+  ) {}
 
   async use(req: AuthRequest, res: Response, next: NextFunction) {
     // const url = req.originalUrl;
@@ -47,7 +51,9 @@ export class JWTMiddleware implements NestMiddleware {
         token,
         TokenType.ACCESS,
       );
-
+      const userExist = await this.userService.userExist(user.Id);
+      if (!userExist)
+        throw new UnauthorizedException('You have no account with us');
       req.user = user;
       next();
     } catch (err) {

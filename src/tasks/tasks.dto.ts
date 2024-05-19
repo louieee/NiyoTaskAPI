@@ -85,8 +85,13 @@ export class TaskListQueryDTO {
     const dto = new TaskListQueryDTO();
     dto.search = data.search;
     dto.done = data.done === 'true';
-    dto.startDate = new Date(data.startDate);
-    dto.endDate = new Date(data.endDate);
+    if (data.startDate) {
+      dto.startDate = new Date(data.startDate);
+    }
+    if (data.endDate) {
+      dto.endDate = new Date(data.endDate);
+    }
+
     const errors = validateSync(TaskListQueryDTO.name, dto, {
       skipMissingProperties: true,
     });

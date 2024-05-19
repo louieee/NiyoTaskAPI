@@ -2,7 +2,12 @@ import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { Model, Types } from 'mongoose';
 import { Task, TaskDocument } from './tasks.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { TaskDetailDTO, TaskDTO, TaskListQueryDTO, TaskListResponseDTO } from './tasks.dto';
+import {
+  TaskDetailDTO,
+  TaskDTO,
+  TaskListQueryDTO,
+  TaskListResponseDTO,
+} from './tasks.dto';
 import { APIResponse, UserJWTPayloadDTO } from '../common/common.dtos';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { TaskEvents } from './tasks.enums';
@@ -77,6 +82,11 @@ export class TaskService {
     taskIds: string[],
   ): Promise<APIResponse<null>> {
     const userId = new Types.ObjectId(user.Id);
+    const count = await this.TaskModel.countDocuments({
+      userId: userId,
+      _id: { $in: taskIds },
+    });
+    if (count < 1) throw new HttpException('selected tasks do not exist', 404);
     await this.TaskModel.deleteMany({
       userId: userId,
       _id: { $in: taskIds },
